@@ -1,9 +1,12 @@
-project_dir: D:/Aziz/GFDRR/CRP/UCRA/Malaysia
-country: Malaysia
+project_dir: <local-path-specific-ucra>
+country: <country>
 
-ee_project: ee-azizlums
+ee_project: <project>
 ee_auth_mode: notebook
 ee_force_auth: false
+
+gcs_data_bucket: gs://city-scan-global-data/ucra-data
+use_gcs_data: true
 
 run_urban_coastal: false
 run_cckp: false
@@ -12,7 +15,7 @@ run_wsf_drought: false
 run_lst_and_stats: true
 
 run_plots: true
-rscript_path: "C:/Program Files/R/R-4.4.1/bin/Rscript.exe"
+rscript_path: Rscript
 plot_scripts:
   - cckp.R
   - landslide.R

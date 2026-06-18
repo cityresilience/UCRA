@@ -131,14 +131,15 @@ install.packages(c(
 
 These are the core R packages used by the plotting scripts you shared. fileciteturn37file4 fileciteturn37file5 fileciteturn37file6 fileciteturn37file7
 
-## Google Earth Engine setup
+## Google Cloud setup
 
-Some modules use Earth Engine, especially land surface temperature processing.
+Some modules use Earth Engine, especially land surface temperature processing, and other data is on Google Cloud Storage:
 
 Authenticate once if needed:
 
 ```bash
-earthengine authenticate
+export GOOGLE_APPLICATION_CREDENTIALS="$HOME/.config/gcloud/application_default_credentials.json"
+gcloud auth application-default print-access-token
 ```
 
 The repository’s Earth Engine helper will attempt initialization first and, if credentials are missing or invalid, will start authentication using the configured auth mode. fileciteturn42file4

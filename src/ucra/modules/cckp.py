@@ -45,7 +45,11 @@ def run(ctx: PipelineContext) -> None:
 
     """CCKP climate statistics processing."""
 
-    data_folder = Path('data/CCKP')
+    data_folder = 'CCKP'
+
+    def open_cckp_dataset(filename: str):
+        return ctx.open_xarray_dataset(data_folder, filename)
+
     # Keep a dedicated intermediate/output folder for CCKP side products.
     int_output_folder = Path('output/CCKP')
     int_output_folder.mkdir(parents=True, exist_ok=True)
@@ -74,8 +78,8 @@ def run(ctx: PipelineContext) -> None:
     for ssp in ssps:
         for period in periods:
             for varia in varias0:
-                clim = xr.open_dataset(data_folder / ('climatology-'+varia+'-annual-mean_cmip6_annual_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc'))
-                anom = xr.open_dataset(data_folder / ('anomaly-'+varia+'-annual-mean_cmip6_annual_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc'))
+                clim = open_cckp_dataset('climatology-'+varia+'-annual-mean_cmip6_annual_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc')
+                anom = open_cckp_dataset('anomaly-'+varia+'-annual-mean_cmip6_annual_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc')
 
                 for index, row in centroids.iterrows():
                     x_coords = [row['x']-1, row['x'], row['x']+1]
@@ -114,8 +118,8 @@ def run(ctx: PipelineContext) -> None:
     for ssp in ssps:
         for period in periods:
             for varia in varias1:
-                clim = xr.open_dataset(data_folder / ('climatology-'+varia+'-annual-mean_cmip6_annual_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc'))
-                anom = xr.open_dataset(data_folder / ('anomaly-'+varia+'-annual-mean_cmip6_annual_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc'))
+                clim = open_cckp_dataset('climatology-'+varia+'-annual-mean_cmip6_annual_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc')
+                anom = open_cckp_dataset('anomaly-'+varia+'-annual-mean_cmip6_annual_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc')
 
                 for index, row in centroids.iterrows():
                     x_coords = [row['x']-1, row['x'], row['x']+1]
@@ -154,7 +158,7 @@ def run(ctx: PipelineContext) -> None:
     varia = 'spei12'
     for ssp in ssps:
         for period in periods:
-            clim = xr.open_dataset(data_folder / ('climatology-'+varia+'-annual-mean_cmip6_annual_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc'))
+            clim = open_cckp_dataset('climatology-'+varia+'-annual-mean_cmip6_annual_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc')
 
             for index, row in centroids.iterrows():
                     x_coords = [row['x']-1, row['x'], row['x']+1]
@@ -197,7 +201,7 @@ def run(ctx: PipelineContext) -> None:
     for ssp in ssps:
         for period in ['2035-2064']:
             for rp in rps:
-                aep = xr.open_dataset(data_folder / ('changefactorfaep'+rp+'-rx5day-period-mean_cmip6_period_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc'))
+                aep = open_cckp_dataset('changefactorfaep'+rp+'-rx5day-period-mean_cmip6_period_all-regridded-bct-ssp'+ssp+'-climatology_median_'+period+'.nc')
 
                 for index, row in centroids.iterrows():
                     x_coords = [row['x']-1, row['x'], row['x']+1]

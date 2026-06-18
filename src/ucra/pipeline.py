@@ -29,9 +29,16 @@ def run_pipeline(project_dir: str | Path, country: str, config_path: str | Path 
     run_environment = cfg.get("run_environment", True)
     run_wsf_drought = cfg.get("run_wsf_drought", True)
     run_lst_and_stats = cfg.get("run_lst_and_stats", True)
+    gcs_data_bucket = cfg.get("gcs_data_bucket")
+    use_gcs_data = bool(cfg.get("use_gcs_data", False))
 
     # bootstrap must still run because it builds the PipelineContext
-    ctx = bootstrap.run(project_dir=project_dir, country=country)
+    ctx = bootstrap.run(
+        project_dir=project_dir,
+        country=country,
+        gcs_data_bucket=gcs_data_bucket,
+        use_gcs_data=use_gcs_data,
+    )
 
     if run_urban_coastal:
         urban_coastal.run(ctx)

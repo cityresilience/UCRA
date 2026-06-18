@@ -4,6 +4,9 @@ pyyaml
 pandas
 numpy
 xarray
+h5netcdf
+h5py
+gcsfs
 rioxarray
 geopandas
 fiona

@@ -5,7 +5,12 @@ from pathlib import Path
 from ucra.context import PipelineContext
 
 
-def run(project_dir: str | Path, country: str) -> PipelineContext:
+def run(
+    project_dir: str | Path,
+    country: str,
+    gcs_data_bucket: str | None = None,
+    use_gcs_data: bool = False,
+) -> PipelineContext:
     import math
     import os
     import shutil
@@ -206,4 +211,6 @@ def run(project_dir: str | Path, country: str) -> PipelineContext:
         cities=cities,
         centroids=centroids,
         epsg_dict=epsg_dict,
+        gcs_data_bucket=gcs_data_bucket,
+        use_gcs_data=use_gcs_data,
     )
