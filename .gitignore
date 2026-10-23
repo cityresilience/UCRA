@@ -1,3 +1,16 @@
 **/.DS_Store
 shapefiles_received/*
 **/__pycache__
+shapefile
+*.pyc
+*.shp
+*.cpg
+*.dbf
+*.shx
+*.prj
+*.sbn
+*.sbx
+# maybe too aggressive to ignore all CSVs
+*.csv
+**/AOI
+*.png

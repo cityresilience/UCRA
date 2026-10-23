@@ -50,6 +50,13 @@ def run(ctx: PipelineContext) -> None:
     def open_cckp_dataset(filename: str):
         return ctx.open_xarray_dataset(data_folder, filename)
 
+    def timedelta_to_days(val):
+        """Convert any timedelta-like value to days as a float."""
+        if pd.isna(val):
+            return np.nan
+        td = pd.Timedelta(val)
+        return td.total_seconds() / (24 * 3600)
+
     # Keep a dedicated intermediate/output folder for CCKP side products.
     int_output_folder = Path('output/CCKP')
     int_output_folder.mkdir(parents=True, exist_ok=True)
@@ -141,10 +148,12 @@ def run(ctx: PipelineContext) -> None:
 
                             if (clim_lon, clim_lat) not in clim_val_coords:
                                 clim_val_coords.append((clim_lon, clim_lat))
-                                clim_val_vals.append(np.timedelta64(clim_val_df['climatology-'+varia+'-annual-mean'].mean()).astype('timedelta64[D]') / np.timedelta64(1, 'D'))
+                                # clim_val_vals.append(np.timedelta64(clim_val_df['climatology-'+varia+'-annual-mean'].mean()).astype('timedelta64[D]') / np.timedelta64(1, 'D'))
+                                clim_val_vals.append(timedelta_to_days(clim_val_df['climatology-'+varia+'-annual-mean'].mean()))
                             if (anom_lon, anom_lat) not in anom_val_coords:
                                 anom_val_coords.append((anom_lon, anom_lat))
-                                anom_val_vals.append(np.timedelta64(anom_val_df['anomaly-'+varia+'-annual-mean'].mean()).astype('timedelta64[D]') / np.timedelta64(1, 'D'))
+                                # anom_val_vals.append(np.timedelta64(anom_val_df['anomaly-'+varia+'-annual-mean'].mean()).astype('timedelta64[D]') / np.timedelta64(1, 'D'))
+                                anom_val_vals.append(timedelta_to_days(anom_val_df['anomaly-'+varia+'-annual-mean'].mean()))
 
                     clim_val = np.nanmean(clim_val_vals)
                     anom_val = np.nanmean(anom_val_vals)

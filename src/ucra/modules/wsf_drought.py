@@ -361,7 +361,7 @@ def run(ctx: PipelineContext) -> None:
             if slr_pattern.match(slr_raster.name):
                 build_slr_tabulate_csv_from_raster(city, slr_raster)
 
-    data_folder = Path("data/drought")
+    drought_data_prefix = "drought"
 
     def unzip_files(data_folder: Path) -> None:
         extension = ".zip"
@@ -384,11 +384,12 @@ def run(ctx: PipelineContext) -> None:
     raster_list = {"twsan": "m"}
     month_list = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
 
-    def clip_drought(folder: Path, raster_prefix: str, raster_suffix: str, year: str, date: str) -> None:
+    def clip_drought(raster_prefix: str, raster_suffix: str, year: str, date: str) -> None:
         try:
-            input_raster = folder / f"{raster_prefix}_m_wld_{year}{date}01_{raster_suffix}.tif"
-            if not input_raster.exists():
-                return
+            input_raster = ctx.ensure_local_data_file(
+                drought_data_prefix,
+                f"{raster_prefix}_m_wld_{year}{date}01_{raster_suffix}.tif",
+            )
 
             with rasterio.open(input_raster) as src:
                 out_image, out_transform = rasterio.mask.mask(src, features, crop=True, all_touched=True)
@@ -414,7 +415,7 @@ def run(ctx: PipelineContext) -> None:
     for raster in raster_list.keys():
         for year in range(2011, 2021):
             for month in month_list:
-                clip_drought(data_folder, raster, raster_list.get(raster), str(year), str(month))
+                clip_drought(raster, raster_list.get(raster), str(year), str(month))
 
     def sample_drought_raster_to_csv(raster_path: Path, centroids_path: Path, out_csv: Path, value_col: str) -> None:
         centroids_gdf = gpd.read_file(centroids_path).to_crs(epsg=4326).copy()

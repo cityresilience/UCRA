@@ -31,6 +31,10 @@ def run_pipeline(project_dir: str | Path, country: str, config_path: str | Path 
     run_lst_and_stats = cfg.get("run_lst_and_stats", True)
     gcs_data_bucket = cfg.get("gcs_data_bucket")
     use_gcs_data = bool(cfg.get("use_gcs_data", False))
+    wb_countries_gcs_uri = cfg.get(
+        "wb_countries_gcs_uri",
+        "gs://city-scan-global-public/wb_countries/WB_countries_Admin0_10m.fgb",
+    )
 
     # bootstrap must still run because it builds the PipelineContext
     ctx = bootstrap.run(
@@ -38,6 +42,7 @@ def run_pipeline(project_dir: str | Path, country: str, config_path: str | Path 
         country=country,
         gcs_data_bucket=gcs_data_bucket,
         use_gcs_data=use_gcs_data,
+        wb_countries_gcs_uri=wb_countries_gcs_uri,
     )
 
     if run_urban_coastal:

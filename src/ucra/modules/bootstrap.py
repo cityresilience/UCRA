@@ -10,6 +10,7 @@ def run(
     country: str,
     gcs_data_bucket: str | None = None,
     use_gcs_data: bool = False,
+    wb_countries_gcs_uri: str = "gs://city-scan-global-public/wb_countries/WB_countries_Admin0_10m.fgb",
 ) -> PipelineContext:
     import math
     import os
@@ -84,6 +85,8 @@ def run(
     project_dir = Path(project_dir).resolve()
     if not country:
         raise ValueError("country must be provided via config or CLI")
+
+    project_dir.mkdir(parents=True, exist_ok=True)
 
     os.chdir(project_dir)
     print(project_dir)
@@ -188,7 +191,11 @@ def run(
             utm = 32600 + math.ceil((x + 180) / 6)
             f.write(f"{city},{x},{y},{utm}\n")
 
-    all_countries = gpd.read_file(Path("data") / "wb_countries_admin0_10m" / "WB_countries_Admin0_10m.shp")
+    if use_gcs_data:
+        os.environ.setdefault("GS_NO_SIGN_REQUEST", "YES")
+        all_countries = gpd.read_file(PipelineContext.gs_to_vsi_path(wb_countries_gcs_uri))
+    else:
+        all_countries = gpd.read_file(Path("data") / "wb_countries_admin0_10m" / "WB_countries_Admin0_10m.shp")
     country_shp = all_countries[
         all_countries["NAME_EN"].astype(str).str.strip().str.lower() == str(country).strip().lower()
     ]
